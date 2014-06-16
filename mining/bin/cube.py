@@ -100,6 +100,13 @@ class CubeProcess(object):
 
         self.pdict = map(fix_render, self.df.to_dict(outtype='records'))
 
+    def recall_store(self, bucket_content):
+        try:
+            return bucket_content.store()
+        except:
+            self.recall_store(bucket_content)
+
+
     def save(self):
         MyClient = riak.RiakClient(
             protocol=conf("riak")["protocol"],
@@ -114,7 +121,10 @@ class CubeProcess(object):
         data = {'data': self.pdict, 'columns': self.keys}
         bucket_content = MyBucket.new(self.slug, data=data,
                                       content_type="application/json")
-        bucket_content.store()
+        try:
+            bucket_content.store()
+        except:
+            self.recall_store(bucket_content)
 
         del MyClient
         del MyBucket
