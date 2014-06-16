@@ -103,7 +103,9 @@ class CubeProcess(object):
     def recall_store(self, bucket_content):
         try:
             return bucket_content.store()
-        except:
+        except Exception, e:
+            log_it(e, "bin-mining")
+            log_it(traceback.format_exc(), "bin-mining")
             self.recall_store(bucket_content)
 
 
@@ -123,7 +125,9 @@ class CubeProcess(object):
                                       content_type="application/json")
         try:
             bucket_content.store()
-        except:
+        except Exception, e:
+            log_it(e, "bin-mining")
+            log_it(traceback.format_exc(), "bin-mining")
             self.recall_store(bucket_content)
 
         del MyClient
